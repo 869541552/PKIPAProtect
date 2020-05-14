@@ -7,7 +7,14 @@
 //
 
 #import "PKMobileProvisionInfo.h"
+#import <CommonCrypto/CommonDigest.h>
+#import <mach-o/fat.h>
+#import <mach-o/loader.h>
+#import <mach/mach_init.h>
+#import <mach/mach_traps.h>
+#import <mach/vm_map.h>
 #import <UIKit/UIKit.h>
+
 @interface PKMobileProvisionInfo ()
 @property (nonatomic, strong) NSString *teamID;
 @property (nonatomic, strong) NSString *appID;
@@ -148,4 +155,72 @@ char *printEnv(void){
     }
     return NO;
 }
+
++(BOOL)isBinaryEncrypted{
+    int cryptid = binaryCryptid();
+    if (cryptid == 1) {
+        return YES;
+    }
+    return NO;
+}
+
+/// cryptid为加密状态，0表示未加密，1表示解密；
+int binaryCryptid()
+{
+    // checking current binary's LC_ENCRYPTION_INFO
+    const void *binaryBase;
+    struct load_command *machoCmd = NULL;
+    const struct mach_header *machoHeader;
+
+    NSString *path = [[NSBundle mainBundle] executablePath];
+    NSData *filedata = [NSData dataWithContentsOfFile:path];
+    binaryBase = (char *)[filedata bytes];
+
+    machoHeader = (const struct mach_header *) binaryBase;
+
+    if(machoHeader->magic == FAT_CIGAM)
+    {
+        unsigned int offset = 0;
+        struct fat_arch *fatArch = (struct fat_arch *)((struct fat_header *)machoHeader + 1);
+        struct fat_header *fatHeader = (struct fat_header *)machoHeader;
+        for(uint32_t i = 0; i < ntohl(fatHeader->nfat_arch); i++)
+        {
+            if(sizeof(int *) == 4 && !(ntohl(fatArch->cputype) & CPU_ARCH_ABI64)) // check 32bit section for 32bit architecture
+            {
+                offset = ntohl(fatArch->offset);
+                break;
+            }
+            else if(sizeof(int *) == 8 && (ntohl(fatArch->cputype) & CPU_ARCH_ABI64)) // and 64bit section for 64bit architecture
+            {
+                offset = ntohl(fatArch->offset);
+                break;
+            }
+            fatArch = (struct fat_arch *)((uint8_t *)fatArch + sizeof(struct fat_arch));
+        }
+        machoHeader = (const struct mach_header *)((uint8_t *)machoHeader + offset);
+    }
+    if(machoHeader->magic == MH_MAGIC)    // 32bit
+    {
+        machoCmd = (struct load_command *)((struct mach_header *)machoHeader + 1);
+    }
+    else if(machoHeader->magic == MH_MAGIC_64)   // 64bit
+    {
+        machoCmd = (struct load_command *)((struct mach_header_64 *)machoHeader + 1);
+    }
+    for(uint32_t i=0; i < machoHeader->ncmds && machoCmd != NULL; i++){
+        if(machoCmd->cmd == LC_ENCRYPTION_INFO)
+        {
+            struct encryption_info_command *cryptCmd = (struct encryption_info_command *) machoCmd;
+            return cryptCmd->cryptid;
+        }
+        if(machoCmd->cmd == LC_ENCRYPTION_INFO_64)
+        {
+            struct encryption_info_command_64 *cryptCmd = (struct encryption_info_command_64 *) machoCmd;
+            return cryptCmd->cryptid;
+        }
+        machoCmd = (struct load_command *)((uint8_t *)machoCmd + machoCmd->cmdsize);
+    }
+    return 0; // couldn't find cryptcmd
+}
+
 @end

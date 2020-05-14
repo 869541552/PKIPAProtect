@@ -15,6 +15,7 @@
 		E10E0470246BE501009F558F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E10E046E246BE501009F558F /* LaunchScreen.storyboard */; };
 		E10E0473246BE501009F558F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E10E0472246BE501009F558F /* main.m */; };
 		E10E047B246BE84F009F558F /* PKMobileProvisionInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = E10E047A246BE84F009F558F /* PKMobileProvisionInfo.m */; };
+		E14FB8B3246CEEBD00152BF3 /* CodeSigning.c in Sources */ = {isa = PBXBuildFile; fileRef = E14FB8B2246CEEBD00152BF3 /* CodeSigning.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,8 @@
 		E10E0472246BE501009F558F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		E10E0479246BE84F009F558F /* PKMobileProvisionInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PKMobileProvisionInfo.h; sourceTree = "<group>"; };
 		E10E047A246BE84F009F558F /* PKMobileProvisionInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PKMobileProvisionInfo.m; sourceTree = "<group>"; };
+		E14FB8B1246CEEBD00152BF3 /* CodeSigning.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CodeSigning.h; sourceTree = "<group>"; };
+		E14FB8B2246CEEBD00152BF3 /* CodeSigning.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = CodeSigning.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +80,8 @@
 				E10E0472246BE501009F558F /* main.m */,
 				E10E0479246BE84F009F558F /* PKMobileProvisionInfo.h */,
 				E10E047A246BE84F009F558F /* PKMobileProvisionInfo.m */,
+				E14FB8B1246CEEBD00152BF3 /* CodeSigning.h */,
+				E14FB8B2246CEEBD00152BF3 /* CodeSigning.c */,
 			);
 			path = PKIPAProtect;
 			sourceTree = "<group>";
@@ -153,6 +158,7 @@
 			files = (
 				E10E0468246BE4FB009F558F /* ViewController.m in Sources */,
 				E10E0462246BE4FB009F558F /* AppDelegate.m in Sources */,
+				E14FB8B3246CEEBD00152BF3 /* CodeSigning.c in Sources */,
 				E10E0473246BE501009F558F /* main.m in Sources */,
 				E10E0465246BE4FB009F558F /* SceneDelegate.m in Sources */,
 				E10E047B246BE84F009F558F /* PKMobileProvisionInfo.m in Sources */,
